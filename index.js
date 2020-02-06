@@ -2,12 +2,18 @@ console.log("index.js: loaded");
 
 async function main() {
   try {
-    const userInfo = await fetchUserInfo("js-primer-example");
+    const userId = getUserId();
+    const userInfo = await fetchUserInfo(userId);
     const view = createView(userInfo);
     displayView(view);
   } catch (error) {
     console.error(`エラーが発生しました (${error})`);
   }
+}
+
+function getUserId() {
+  const value = document.getElementById("userId").value;
+  return encodeURIComponent(value);
 }
 
 function fetchUserInfo(userId) {
