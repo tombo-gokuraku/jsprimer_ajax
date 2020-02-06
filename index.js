@@ -1,5 +1,9 @@
 console.log("index.js: loaded");
 
+function main() {
+  fetchUserInfo("js-primer-example");
+}
+
 function fetchUserInfo(userId) {
   fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
     .then(response => {
@@ -10,18 +14,10 @@ function fetchUserInfo(userId) {
       } else {
         return response.json().then(userInfo => {
           console.log(userInfo);
-          const view = escapeHTML`
-            <h4>${userInfo.name} (@${userInfo.login})</h4>
-            <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
-            <dl>
-                <dt>Location</dt>
-                <dd>${userInfo.location}</dd>
-                <dt>Repositories</dt>
-                <dd>${userInfo.public_repos}</dd>
-            </dl>
-            `;
-          const result = document.getElementById("result");
-          result.innerHTML = view;
+          // HTMLの組み立て
+          const view = createView(userInfo);
+          // HTMLの挿入
+          displayView(view);
         });
       }
     })
@@ -51,4 +47,24 @@ function escapeHTML(strings, ...values) {
       return result + String(value) + str;
     }
   });
+}
+
+// htmlを組み立てる関数
+function createView(userInfo) {
+  return escapeHTML`
+    <h4>${userInfo.name} (@${userInfo.login})</h4>
+    <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
+    <dl>
+        <dt>Location</dt>
+        <dd>${userInfo.location}</dd>
+        <dt>Repositories</dt>
+        <dd>${userInfo.public_repos}</dd>
+    </dl>
+    `;
+}
+
+// htmlを挿入する関数
+function displayView(view) {
+  const result = document.getElementById("result");
+  result.innerHTML = view;
 }
