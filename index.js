@@ -1,29 +1,34 @@
 console.log("index.js: loaded");
 
 function main() {
-  fetchUserInfo("js-primer-example");
+  fetchUserInfo("js-primer-exampleeee").catch(error => {
+    // Promiseチェーンの中で発生したエラーを受け取る
+    console.error(`エラーが発生しました (${error})`);
+  });
 }
 
 function fetchUserInfo(userId) {
-  fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
-    .then(response => {
-      console.log(response.status);
-      // エラーレスポンスが返されたことを検知する
-      if (!response.ok) {
-        console.error("エラーレスポンス", response);
-      } else {
-        return response.json().then(userInfo => {
-          console.log(userInfo);
-          // HTMLの組み立て
-          const view = createView(userInfo);
-          // HTMLの挿入
-          displayView(view);
-        });
-      }
-    })
-    .catch(error => {
-      console.error(error);
-    });
+  return fetch(
+    `https://api.github.com/users/${encodeURIComponent(userId)}`
+  ).then(response => {
+    console.log(response.status);
+    // エラーレスポンスが返されたことを検知する
+    if (!response.ok) {
+      // console.error("エラーレスポンス", response);
+      return Promise.reject(
+        new Error(`${response.status}: ${response.statusText}`)
+        // "hoge piyo"
+      );
+    } else {
+      return response.json().then(userInfo => {
+        console.log(userInfo);
+        // HTMLの組み立て
+        const view = createView(userInfo);
+        // HTMLの挿入
+        displayView(view);
+      });
+    }
+  });
 }
 
 // テンプレートリテラル内の文字列を置き換える
