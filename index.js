@@ -1,10 +1,13 @@
 console.log("index.js: loaded");
 
 function main() {
-  fetchUserInfo("js-primer-exampleeee").catch(error => {
-    // Promiseチェーンの中で発生したエラーを受け取る
-    console.error(`エラーが発生しました (${error})`);
-  });
+  fetchUserInfo("js-primer-example")
+    .then(userInfo => createView(userInfo))
+    .then(view => displayView(view))
+    .catch(error => {
+      // Promiseチェーンの中で発生したエラーを受け取る
+      console.error(`エラーが発生しました (${error})`);
+    });
 }
 
 function fetchUserInfo(userId) {
@@ -17,16 +20,9 @@ function fetchUserInfo(userId) {
       // console.error("エラーレスポンス", response);
       return Promise.reject(
         new Error(`${response.status}: ${response.statusText}`)
-        // "hoge piyo"
       );
     } else {
-      return response.json().then(userInfo => {
-        console.log(userInfo);
-        // HTMLの組み立て
-        const view = createView(userInfo);
-        // HTMLの挿入
-        displayView(view);
-      });
+      return response.json();
     }
   });
 }
